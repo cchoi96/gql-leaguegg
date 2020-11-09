@@ -21,7 +21,7 @@ class ChampionAPI extends RESTDataSource {
       const championListResponse = await getChampionList();
       const championList = championListResponse.data;
       const championRotation = await this.get("lol/platform/v3/champion-rotations");
-      const championRotationIds = championRotation?.freeChampionIds;
+      const championRotationIds = championRotation.freeChampionIds;
 
       return (Array.isArray(championRotationIds)) ?
       championRotationIds.map((id) => this.freeChampionReducer(id, championList, patch)) :
