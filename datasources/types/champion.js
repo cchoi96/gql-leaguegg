@@ -38,7 +38,8 @@ class ChampionAPI extends RESTDataSource {
     try {
       const patch = await getPatchNumber();
       const response = await axios.get(`${this.dataDragonURL}/cdn/${patch}/data/en_US/champion/${_.capitalize(name)}.json`);
-      const championData = response?.data?.data;
+      if (!response.data) return {};
+      const championData = response.data.data;
       if (championData) return await this.riotChampionReducer(patch, championData[Object.keys(championData)[0]]);
     } catch(err) {
       const status = err.response.status;
