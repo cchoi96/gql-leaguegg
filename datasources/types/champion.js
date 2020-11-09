@@ -62,7 +62,50 @@ class ChampionAPI extends RESTDataSource {
       enemytips: data.enemytips,
       resourceType: data.partype,
       spells: data.spells.map(spell => this.spellReducer(patch, spell)),
-      passive: this.spellReducer(patch, data.passive)
+      passive: this.spellReducer(patch, data.passive),
+      recommendedItems: await this.championItemReducer(patch, data.recommended)
+    }
+  }
+
+  async championItemReducer(patch, data) {
+    try {
+      const itemResponse = await this.itemsData(patch);
+      if (!itemResponse.data) return [];
+      const items = itemResponse.data.data;
+      let recommendedSRItems = data.find(queue => queue.mode == "CLASSIC");
+      return recommendedSRItems.blocks.map((itemSet) => this.itemSetReducer(patch, itemSet, items));
+    } catch(err) {
+      console.error(err);
+      throw new Error(err);
+    }
+  }
+
+  async itemsData(patch) {
+    try {
+      return await axios.get(`${this.dataDragonURL}/cdn/${patch}/data/en_US/item.json`);
+    } catch (err) {
+      console.error(err);
+      return { data: {} };
+    }
+  }
+
+  itemSetReducer(patch, set, items) {
+    return {
+      type: set.type,
+      items: set.items.map(item => {
+        const detailedItem = items[item.id];
+        return {
+          name: detailedItem.name,
+          desc: detailedItem.description,
+          plaintext: detailedItem.plaintext,
+          tags: detailedItem.tags,
+          purchaseAmount: detailedItem.gold.total,
+          sellAmount: detailedItem.gold.sell,
+          stats: detailedItem.stats,
+          consumed: detailedItem.consumed,
+          image: `${this.dataDragonURL}/cdn/${patch}/img/item/${item.id}.png`
+        }
+      })
     }
   }
 

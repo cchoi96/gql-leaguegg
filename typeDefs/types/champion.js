@@ -15,6 +15,7 @@ module.exports = gql`
     resourceType: String
     spells: [ChampSpell]
     passive: ChampPassive
+    recommendedItems: [ChampItemSet]
   }
 
   type ChampInfo {
@@ -63,6 +64,91 @@ module.exports = gql`
     name: String
     desc: String
     image: String
+  }
+
+  type ChampItemSet {
+    type: String
+    items: [ChampItem]
+  }
+
+  type ChampItem {
+    name: String
+    desc: String
+    plaintext: String
+    tags: [String]
+    purchaseAmount: Int
+    sellAmount: Int
+    stats: ItemStats
+    consumed: Boolean
+    image: String
+  }
+
+  type ItemStats {
+    FlatHPPoolMod: Int
+    rFlatHPModPerLevel: Int
+    FlatMPPoolMod: Int
+    rFlatMPModPerLevel: Int
+    PercentHPPoolMod: Int
+    PercentMPPoolMod: Int
+    FlatHPRegenMod: Int
+    rFlatHPRegenModPerLevel: Int
+    PercentHPRegenMod: Int
+    FlatMPRegenMod: Int
+    rFlatMPRegenModPerLevel: Int
+    PercentMPRegenMod: Int
+    FlatArmorMod: Int
+    rFlatArmorModPerLevel: Int
+    PercentArmorMod: Int
+    rFlatArmorPenetrationMod: Int
+    rFlatArmorPenetrationModPerLevel: Int
+    rPercentArmorPenetrationMod: Int
+    rPercentArmorPenetrationModPerLevel: Int
+    FlatPhysicalDamageMod: Int
+    rFlatPhysicalDamageModPerLevel: Int
+    PercentPhysicalDamageMod: Int
+    FlatMagicDamageMod: Int
+    rFlatMagicDamageModPerLevel: Int
+    PercentMagicDamageMod: Int
+    FlatMovementSpeedMod: Int
+    rFlatMovementSpeedModPerLevel: Int
+    PercentMovementSpeedMod: Int
+    rPercentMovementSpeedModPerLevel: Int
+    FlatAttackSpeedMod: Int
+    PercentAttackSpeedMod: Int
+    rPercentAttackSpeedModPerLevel: Int
+    rFlatDodgeMod: Int
+    rFlatDodgeModPerLevel: Int
+    PercentDodgeMod: Int
+    FlatCritChanceMod: Int
+    rFlatCritChanceModPerLevel: Int
+    PercentCritChanceMod: Int
+    FlatCritDamageMod: Int
+    rFlatCritDamageModPerLevel: Int
+    PercentCritDamageMod: Int
+    FlatBlockMod: Int
+    PercentBlockMod: Int
+    FlatSpellBlockMod: Int
+    rFlatSpellBlockModPerLevel: Int
+    PercentSpellBlockMod: Int
+    FlatEXPBonus: Int
+    PercentEXPBonus: Int
+    rPercentCooldownMod: Int
+    rPercentCooldownModPerLevel: Int
+    rFlatTimeDeadMod: Int
+    rFlatTimeDeadModPerLevel: Int
+    rPercentTimeDeadMod: Int
+    rPercentTimeDeadModPerLevel: Int
+    rFlatGoldPer10Mod: Int
+    rFlatMagicPenetrationMod: Int
+    rFlatMagicPenetrationModPerLevel: Int
+    rPercentMagicPenetrationMod: Int
+    rPercentMagicPenetrationModPerLevel: Int
+    FlatEnergyRegenMod: Int
+    rFlatEnergyRegenModPerLevel: Int
+    FlatEnergyPoolMod: Int
+    rFlatEnergyModPerLevel: Int
+    PercentLifeStealMod: Int
+    PercentSpellVampMod: Int
   }
 
   extend type Query {
