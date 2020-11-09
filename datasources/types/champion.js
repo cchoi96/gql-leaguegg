@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const axios = require('axios');
+const _ = require('lodash');
 const { RESTDataSource } = require('apollo-datasource-rest');
 const { getPatchNumber, getChampionList, getChampionImages } = require('../static');
 
@@ -29,6 +31,47 @@ class ChampionAPI extends RESTDataSource {
     } catch (err) {
       console.error(err);
       throw new Error(err);
+    }
+  }
+
+  async getChampionData({ name }) {
+    try {
+      const patch = await getPatchNumber();
+      const response = await axios.get(`${this.dataDragonURL}/cdn/${patch}/data/en_US/champion/${_.capitalize(name)}.json`);
+      const championData = response?.data?.data;
+      if (championData) return await this.riotChampionReducer(patch, championData[Object.keys(championData)[0]]);
+    } catch(err) {
+      const status = err.response.status;
+      // need to handle errors better, 403 if not found, potentially throw error and handle on client
+      console.error((status == 403 || status == 404) ? `Champion ${champion} cannot be found.` : err);
+    }
+  }
+
+  async riotChampionReducer(patch, data) {
+    const id = data.key;
+    return {
+      id,
+      name: data.name,
+      title: data.title,
+      desc: data.lore,
+      info: data.info,
+      image: getChampionImages(id, patch),
+      tags: data.tags,
+      stats: data.stats,
+      allytips: data.allytips,
+      enemytips: data.enemytips,
+      resourceType: data.partype,
+      spells: data.spells.map(spell => this.spellReducer(patch, spell)),
+      passive: this.spellReducer(patch, data.passive)
+    }
+  }
+
+  spellReducer(patch, spell) {
+    return {
+      id: spell.id,
+      name: spell.name,
+      desc: spell.description,
+      image: `${this.dataDragonURL}/cdn/${patch}/img/spell/${spell.image.full}`
     }
   }
 

@@ -67,5 +67,6 @@ module.exports = gql`
 
   extend type Query {
     freeChampions: [Champion]
+    champion(name: String): Champion
   }
 `;
